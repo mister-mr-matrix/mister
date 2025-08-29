@@ -1,0 +1,46 @@
+services:
+  # Mister service
+  mister:
+    image: ghcr.io/mister-mr-matrix/mister:latest
+    environment:
+      MR_FRONTEND_URL: ${MR_FRONTEND_URL}
+      MR_ADMIN_TOKEN: ${MR_ADMIN_TOKEN}
+      MR_MATRIX_HOMESERVER: ${MR_MATRIX_HOMESERVER}
+      MR_MATRIX_HOMESERVER_URL: ${MR_MATRIX_HOMESERVER_URL}
+      MR_MATRIX_REGISTRATION_TOKEN: ${MR_MATRIX_REGISTRATION_TOKEN}
+      MR_DATABASE_DRIVER: ${MR_DATABASE_DRIVER:-redis}
+      MR_DATABASE_REDIS_HOST: ${MR_DATABASE_REDIS_HOST:-valkey}
+      MR_DATABASE_REDIS_PASSWORD: ${MR_DATABASE_REDIS_PASSWORD}
+    restart: unless-stopped
+    depends_on:
+      valkey:
+        condition: service_healthy
+        restart: true
+
+  # Valkey service
+  valkey:
+    image: docker.io/valkey/valkey:latest
+    command:
+      - valkey-server
+      - --appendonly
+      - 'yes'
+      - --requirepass
+      - '${MR_DATABASE_REDIS_PASSWORD}'
+    volumes:
+      - 'valkey-data:/data'
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - 'CMD'
+        - 'valkey-cli'
+        - '-a'
+        - '${MR_DATABASE_REDIS_PASSWORD}'
+        - 'ping'
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+# Define named volumes
+volumes:
+  valkey-data:
