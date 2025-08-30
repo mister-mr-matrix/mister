@@ -3,10 +3,11 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
+import type { Credentials } from '$lib/types/credentials.js';
 import { validToken, removeToken } from '$lib/server/db/token.js';
 import { generateUsername } from '$lib/server/generator/username.js';
 import { generatePassphrase } from '$lib/server/generator/passphrase.js';
-import { registerUser, type Credentials } from '$lib/server/matrix/register.js';
+import { registerUser } from '$lib/server/matrix/register.js';
 import { matrixHandle } from '$lib/server/generator/matrix-handle.js';
 
 export const load: PageServerLoad = async ({ url }) => {

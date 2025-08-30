@@ -8,11 +8,9 @@ import { convertUnitTimeToExpiryDate, generateLabelsAndValues } from '$lib/isoti
 import { expiryOptions } from '$lib/server/env/expiry.js';
 
 export const load: PageServerLoad = async () => {
-	const expDateOpts = generateLabelsAndValues(expiryOptions());
-
 	return {
 		form: await superValidate(zod4(formSchema)),
-		expDateOpts
+		expDateOpts: generateLabelsAndValues(expiryOptions())
 	};
 };
 

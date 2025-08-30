@@ -1,9 +1,5 @@
 import { env } from '$env/dynamic/private';
-
-export type Credentials = {
-	username: string;
-	passphrase: string;
-};
+import type { Credentials } from '$lib/types/credentials';
 
 type MatrixRegisterResponse = {
 	access_token: string;

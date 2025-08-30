@@ -46,7 +46,7 @@ export const actions: Actions = {
 
 		try {
 			const { timestamp } = await createSession(sessionDB, token, inactivityTimeout);
-			setSessionTokenCookie(event, token, timestamp, inactivityTimeout);
+			setSessionTokenCookie(event, token, new Date(timestamp), inactivityTimeout);
 		} catch (error) {
 			const msg = 'Failed to login';
 			console.error(`${msg}: ${error}`);

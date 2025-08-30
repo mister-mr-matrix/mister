@@ -33,7 +33,7 @@
 
 	const { form: formData, enhance } = form;
 
-	const expDateOpts = data.expDateOpts;
+	const { expDateOpts } = data;
 	function getLabelByValue(v: string): string {
 		return expDateOpts.find(({ value }) => v === value)?.label ?? 'N/A';
 	}
