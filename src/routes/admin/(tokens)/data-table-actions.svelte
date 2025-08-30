@@ -13,7 +13,7 @@
 	}: { token: string; frontendUrl: string; submitRemoveToken: FormSubmitFunction } = $props();
 </script>
 
-<CopyButton label="Token UUID" value={`${frontendUrl}${token}`} />
+<CopyButton label="Token UUID" value={`${frontendUrl}?token=${token}`} />
 
 <!-- TODO: How to do this for noJS users? -->
 <Button
