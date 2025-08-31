@@ -20,6 +20,8 @@ You need to set the following environment variables for the app to work:
 | `MR_MATRIX_HOMESERVER`          | The name of the Matrix server (domain part of usernames).              | `example.org`                      | N/A                  |
 | `MR_MATRIX_HOMESERVER_URL`      | Actual URL of your Matrix homeserver.                                  | `https://matrix.example.org`       | N/A                  |
 | `MR_MATRIX_REGISTRATION_TOKEN`  | Registration token for Matrix API v3.                                  | `YOUR_MATRIX_REGISTRATION_TOKEN`   | N/A                  |
+| `PUBLIC_MR_RANDOM_USERNAME`     | Should username be randomly generated.                                 | `true`                             | `false`              |
+| `PUBLIC_MR_RANDOM_PASSWORD`     | Should password be randomly generated.                                 | `true`                             | `false`              |
 | `MR_SESSION_INACTIVITY_TIMEOUT` | Session inactivity timeout in minutes.                                 | `5`                                | `5`                  |
 | `MR_DATABASE_DRIVER`            | The database driver to use: `memory` or `redis`.                       | `redis`                            | `memory`             |
 | `MR_DATABASE_REDIS_HOST`        | Redis host.                                                            | `localhost`                        | `localhost`          |

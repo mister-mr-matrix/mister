@@ -12,6 +12,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import CopyButton from '$lib/components/custom/copy-btn/copy-btn.svelte';
+	import { env } from '$env/dynamic/public';
 
 	let { data, form: action }: { data: PageData; form: ActionData } = $props();
 
@@ -98,6 +99,30 @@
 						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>
+					{#if env.PUBLIC_MR_RANDOM_USERNAME !== 'true'}
+						<Form.Field {form} name="username">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Username</Form.Label>
+									<Input {...props} bind:value={$formData.username} />
+								{/snippet}
+							</Form.Control>
+							<Form.Description>The username for your Matrix account.</Form.Description>
+							<Form.FieldErrors />
+						</Form.Field>
+					{/if}
+					{#if env.PUBLIC_MR_RANDOM_PASSWORD !== 'true'}
+						<Form.Field {form} name="password">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Password</Form.Label>
+									<Input {...props} bind:value={$formData.password} />
+								{/snippet}
+							</Form.Control>
+							<Form.Description>The password for your Matrix account.</Form.Description>
+							<Form.FieldErrors />
+						</Form.Field>
+					{/if}
 				</Card.Content>
 				<Card.Footer class="flex-col gap-2">
 					<Form.Button class="w-full">Proceed</Form.Button>

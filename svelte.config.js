@@ -8,7 +8,7 @@ const config = {
 		adapter: adapter(),
 		env: {
 			privatePrefix: 'MR_',
-			publicPrefix: 'MR_PUBLIC_'
+			publicPrefix: 'PUBLIC_MR_'
 		}
 	}
 };

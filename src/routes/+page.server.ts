@@ -1,4 +1,5 @@
 import type { PageServerLoad, Actions } from './$types.js';
+import { env } from '$env/dynamic/public';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { formSchema } from './schema';
@@ -8,6 +9,7 @@ import { validToken, removeToken } from '$lib/server/db/token.js';
 import { generateUsername } from '$lib/server/generator/username.js';
 import { generatePassphrase } from '$lib/server/generator/passphrase.js';
 import { registerUser } from '$lib/server/matrix/register.js';
+import { availableUsername } from '$lib/server/matrix/available.js';
 import { matrixHandle } from '$lib/server/generator/matrix-handle.js';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -46,30 +48,43 @@ export const actions: Actions = {
 			});
 		}
 
-		// TODO: Add option to input username and passphrase instead, configurable with env var
-		let username = '';
-		let passphrase = '';
+		let username = form.data.username ?? '';
+		let passphrase = form.data.password ?? '';
 
-		try {
-			username = await generateUsername();
-		} catch (error) {
-			const msg = 'Failed to generate the username';
-			console.error(`${msg}: ${error}`);
-			return fail(500, {
-				form,
-				msg
-			});
+		if (env.PUBLIC_MR_RANDOM_USERNAME === 'true') {
+			try {
+				username = await generateUsername();
+			} catch (error) {
+				const msg = 'Failed to generate the username';
+				console.error(`${msg}: ${error}`);
+				return fail(500, {
+					form,
+					msg
+				});
+			}
+		} else {
+			const ok = await availableUsername(username);
+			if (!ok) {
+				const msg = 'Username is already taken';
+				console.error(msg);
+				return fail(400, {
+					form,
+					msg
+				});
+			}
 		}
 
-		try {
-			passphrase = await generatePassphrase();
-		} catch (error) {
-			const msg = 'Failed to generate the passphrase';
-			console.error(`${msg}: ${error}`);
-			return fail(500, {
-				form,
-				msg
-			});
+		if (env.PUBLIC_MR_RANDOM_PASSWORD === 'true') {
+			try {
+				passphrase = await generatePassphrase();
+			} catch (error) {
+				const msg = 'Failed to generate the passphrase';
+				console.error(`${msg}: ${error}`);
+				return fail(500, {
+					form,
+					msg
+				});
+			}
 		}
 
 		const credentials: Credentials = {
