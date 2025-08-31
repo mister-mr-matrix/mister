@@ -2,16 +2,16 @@
 	import type { PageData, ActionData } from './$types.js';
 	import { page } from '$app/state';
 
-	import { formSchema } from './schema';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
+	import { Eye, EyeOff } from '@lucide/svelte';
 
+	import { formSchema } from './schema';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
-	import { Eye, EyeOff } from '@lucide/svelte';
 
 	let { data, form: action }: { data: PageData; form: ActionData } = $props();
 

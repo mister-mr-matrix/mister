@@ -1,9 +1,12 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types.js';
+	import { env } from '$env/dynamic/public';
 	import { page } from '$app/state';
+
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
+	import { Eye, EyeOff } from '@lucide/svelte';
 
 	import { formSchema } from './schema';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -12,7 +15,6 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import CopyButton from '$lib/components/custom/copy-btn/copy-btn.svelte';
-	import { env } from '$env/dynamic/public';
 
 	let { data, form: action }: { data: PageData; form: ActionData } = $props();
 
@@ -33,6 +35,8 @@
 	});
 
 	const { form: formData, enhance } = form;
+
+	let inputVisible = $state(false);
 </script>
 
 <div class="flex min-h-screen items-center justify-center p-2">
@@ -116,7 +120,29 @@
 							<Form.Control>
 								{#snippet children({ props })}
 									<Form.Label>Password</Form.Label>
-									<Input {...props} bind:value={$formData.password} />
+									<div class="flex gap-2">
+										<Input
+											type={inputVisible ? 'text' : 'password'}
+											{...props}
+											bind:value={$formData.password}
+										/>
+										<Button
+											type="button"
+											onclick={() => {
+												inputVisible = !inputVisible;
+											}}
+											data-sidebar="trigger"
+											variant="outline"
+											size="icon"
+										>
+											{#if inputVisible}
+												<Eye />
+											{:else}
+												<EyeOff />
+											{/if}
+											<span class="sr-only">Show/Hide password</span>
+										</Button>
+									</div>
 								{/snippet}
 							</Form.Control>
 							<Form.Description>The password for your Matrix account.</Form.Description>
