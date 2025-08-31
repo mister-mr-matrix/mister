@@ -17,4 +17,7 @@ export interface IKeyValueStore<V> {
 
 	// Get all keys/values, with an optional prefix for filtering keys
 	entries(prefix?: string): Promise<Array<{ key: string; value: V }>>;
+
+	// Delete all keys, with an optional prefix for filtering keys
+	clear(prefix?: string): Promise<boolean>;
 }

@@ -17,6 +17,7 @@
 
 	const form = superForm(data.form, {
 		validators: zod4Client(formSchema),
+		resetForm: false,
 		onUpdated: ({ form: f }) => {
 			const msg = action?.msg;
 			if (msg === undefined) {

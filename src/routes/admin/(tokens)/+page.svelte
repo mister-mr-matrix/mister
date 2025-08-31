@@ -5,7 +5,7 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 
-	import { formSchemaRemoveToken } from './schema.js';
+	import { formSchemaRemoveAllTokens, formSchemaRemoveToken } from './schema.js';
 	import { createColumns } from './columns.js';
 	import DataTable from './data-table.svelte';
 	import { tokenStore } from '$lib/stores/token.svelte.js';
@@ -32,6 +32,24 @@
 
 	const { enhance: enhanceRemoveToken, submit: submitRemoveToken } = formRemoveToken;
 
+	const formRemoveAllTokens = superForm(data.formRemoveAllTokens, {
+		validators: zod4Client(formSchemaRemoveAllTokens),
+		onUpdated: ({ form: f }) => {
+			const msg = action?.msg;
+			if (msg === undefined) {
+				return;
+			}
+
+			if (f.valid && page.status === 200) {
+				toast.success(msg);
+			} else {
+				toast.error(msg);
+			}
+		}
+	});
+
+	const { enhance: enhanceRemoveAllTokens } = formRemoveAllTokens;
+
 	const columns = createColumns(data.frontendUrl, submitRemoveToken);
 </script>
 
@@ -50,6 +68,9 @@
 			<a href="/admin/issue">
 				<Button class="w-full">Issue a new token</Button>
 			</a>
+			<form method="POST" action="?/removeAllTokens" use:enhanceRemoveAllTokens>
+				<Button type="submit" variant="destructive" class="w-full">Delete all tokens</Button>
+			</form>
 			<a href="/">
 				<Button variant="link" class="w-full">Go to registration panel</Button>
 			</a>

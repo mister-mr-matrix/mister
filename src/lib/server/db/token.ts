@@ -56,7 +56,7 @@ export async function createToken(
 	token: string,
 	description: string,
 	expiresAt: Date
-): Promise<void> {
+): Promise<Token> {
 	if (token === '') {
 		throw new Error('Token must not be empty string');
 	}
@@ -94,14 +94,21 @@ export async function createToken(
 			expiresAt
 		};
 		await db.set(key, value, ttl);
+
+		return {
+			token,
+			description,
+			createdAt: timestamp,
+			expiresAt
+		};
 	} catch (error) {
 		throw new Error(`Failed to set the new item in the DB: ${error}`);
 	}
 }
 
-export async function removeToken(db: IKeyValueStore<TokenData>, token: string): Promise<void> {
+export async function removeToken(db: IKeyValueStore<TokenData>, token: string): Promise<boolean> {
 	try {
-		await db.del(storageKeyToken(token));
+		return await db.del(storageKeyToken(token));
 	} catch (error) {
 		throw new Error(`Failed to delete the item from the DB: ${error}`);
 	}
@@ -118,5 +125,13 @@ export async function getAllTokens(db: IKeyValueStore<TokenData>): Promise<Token
 		}));
 	} catch (error) {
 		throw new Error(`Failed to get all entries from the DB: ${error}`);
+	}
+}
+
+export async function removeAllTokens(db: IKeyValueStore<TokenData>): Promise<boolean> {
+	try {
+		return await db.clear(storageKeyTokenPrefix);
+	} catch (error) {
+		throw new Error(`Failed to clear items from the DB: ${error}`);
 	}
 }

@@ -5,3 +5,7 @@ export const formSchemaRemoveToken = z.object({
 });
 
 export type FormSchemaRemoveToken = typeof formSchemaRemoveToken;
+
+export const formSchemaRemoveAllTokens = z.object({});
+
+export type FormSchemaRemoveAllTokens = typeof formSchemaRemoveAllTokens;

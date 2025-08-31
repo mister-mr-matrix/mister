@@ -79,4 +79,18 @@ export class MemoryKVStore<V> implements IKeyValueStore<V> {
 
 		return entries;
 	}
+
+	// Delete all keys, with an optional prefix for filtering keys
+	async clear(prefix?: string): Promise<boolean> {
+		let result = false;
+
+		for (let key of this.store.keys()) {
+			if (prefix && !key.startsWith(prefix)) continue;
+
+			this.store.delete(key);
+			if (!result) result = true;
+		}
+
+		return result;
+	}
 }

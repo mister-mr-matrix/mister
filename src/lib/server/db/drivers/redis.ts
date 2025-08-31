@@ -91,6 +91,13 @@ export class RedisKVStore<V> implements IKeyValueStore<V> {
 		return entries;
 	}
 
+	// Delete all keys, with an optional prefix for filtering keys
+	async clear(prefix?: string): Promise<boolean> {
+		const keys = await this.redis.keys(`${prefix ?? ''}*`);
+		const result = await this.redis.del(keys);
+		return result > 0;
+	}
+
 	// Close the Redis connection (optional)
 	async close(): Promise<void> {
 		await this.redis.quit();
