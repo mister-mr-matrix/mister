@@ -11,6 +11,8 @@ services:
       MR_DATABASE_DRIVER: ${MR_DATABASE_DRIVER:-redis}
       MR_DATABASE_REDIS_HOST: ${MR_DATABASE_REDIS_HOST:-valkey}
       MR_DATABASE_REDIS_PASSWORD: ${MR_DATABASE_REDIS_PASSWORD}
+    ports:
+      - 3000:3000
     restart: unless-stopped
     depends_on:
       valkey:
