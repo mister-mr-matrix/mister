@@ -4,7 +4,6 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import type { Credentials } from '$lib/types/credentials.js';
 import { validToken, removeToken } from '$lib/server/db/token.js';
 import { generateUsername } from '$lib/server/generator/username.js';
 import { generatePassphrase } from '$lib/server/generator/passphrase.js';
@@ -87,13 +86,8 @@ export const actions: Actions = {
 			}
 		}
 
-		const credentials: Credentials = {
-			username,
-			passphrase
-		};
-
 		try {
-			const success = await registerUser(credentials);
+			const success = await registerUser({ username, passphrase });
 			if (!success) {
 				throw new Error('Register user returned false');
 			}
@@ -122,8 +116,8 @@ export const actions: Actions = {
 			form,
 			msg,
 			credetials: {
-				username: matrixHandle(credentials.username),
-				passphrase: credentials.passphrase
+				username: matrixHandle(username),
+				passphrase
 			}
 		};
 	}
