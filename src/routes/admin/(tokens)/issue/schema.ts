@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { validUnitTime } from '$lib/isotimer/generate';
+import { validUnitTime } from '$lib/time/unit';
 
 export const formSchema = z.object({
 	description: z.string().default(''),

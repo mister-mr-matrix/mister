@@ -89,6 +89,8 @@ export const actions: Actions = {
 					msg
 				});
 			}
+		} else {
+			// TODO: Check the password strength and breach status using haveibeenpwnd api
 		}
 
 		try {

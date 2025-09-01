@@ -2,7 +2,7 @@ import type { IKeyValueStore } from './interface';
 import { initKeyValueStore } from './init';
 import type { Session, SessionData } from '$lib/types/session';
 import { hashSessionToken } from '$lib/server/auth/session';
-import { timeCompare, timeOffset, timeToSeconds } from '../../time/utils';
+import { timeNow, timeToSeconds } from '$lib/time/utils';
 
 const storageKeySessionIdPrefix = 'MR_SESSION_';
 
@@ -24,7 +24,7 @@ export async function createSession(
 	}
 
 	const sessionId = hashSessionToken(token);
-	const timestamp = new Date(Date.now());
+	const timestamp = timeNow();
 
 	try {
 		const key = storageKeySessionId(sessionId);
@@ -45,10 +45,10 @@ export async function createSession(
 export async function validateSessionToken(
 	db: IKeyValueStore<SessionData>,
 	token: string,
-	inactivityTimeout: number
+	sessionTTL: number
 ): Promise<Session | null> {
 	const sessionId = hashSessionToken(token);
-	const timestamp = new Date(Date.now());
+	const timestamp = timeNow();
 
 	const key = storageKeySessionId(sessionId);
 	const value: SessionData = {
@@ -65,7 +65,7 @@ export async function validateSessionToken(
 	}
 
 	try {
-		await db.set(key, value, timeToSeconds(inactivityTimeout));
+		await db.set(key, value, sessionTTL);
 	} catch (error) {
 		throw new Error(`Failed to set the new timestamp for the item in the DB: ${error}`);
 	}

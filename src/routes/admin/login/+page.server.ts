@@ -18,7 +18,7 @@ export const actions: Actions = {
 		const {
 			request,
 			locals: {
-				config: { hashedAdminToken, inactivityTimeout },
+				config: { hashedAdminToken, sessionTTL },
 				sessionDB
 			}
 		} = event;
@@ -45,8 +45,8 @@ export const actions: Actions = {
 		}
 
 		try {
-			const { timestamp } = await createSession(sessionDB, token, inactivityTimeout);
-			setSessionTokenCookie(event, token, new Date(timestamp), inactivityTimeout);
+			const { timestamp } = await createSession(sessionDB, token, sessionTTL);
+			setSessionTokenCookie(event, token, new Date(timestamp), sessionTTL);
 		} catch (error) {
 			const msg = 'Failed to login';
 			console.error(`${msg}: ${error}`);

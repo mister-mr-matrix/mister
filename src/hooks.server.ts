@@ -34,10 +34,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 
 		// Validate session token
-		const session = await validateSessionToken(sessionDB, token, cfg.inactivityTimeout);
+		const session = await validateSessionToken(sessionDB, token, cfg.sessionTTL);
 		if (session !== null) {
 			// If session is valid, ensure the token is up-to-date
-			setSessionTokenCookie(event, token, new Date(session.timestamp), cfg.inactivityTimeout);
+			setSessionTokenCookie(event, token, new Date(session.timestamp), cfg.sessionTTL);
 
 			// Redirect to the admin home page after login
 			if (event.url.pathname === '/admin/login') {

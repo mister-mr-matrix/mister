@@ -1,9 +1,9 @@
 import { env } from '$env/dynamic/private';
+import { z } from 'zod/v4';
 import type { IKeyValueStore } from './interface';
 import { initKeyValueStore } from './init';
 import type { Token, TokenData } from '$lib/types/token';
-import { z } from 'zod/v4';
-import { timeCompare, timeDelta, timeNow, timeToSeconds } from '../../time/utils';
+import { timeFromSecondsN, timeNow, timeOffset } from '$lib/time/utils';
 
 const storageKeyTokenPrefix = 'MR_TOKEN_';
 
@@ -34,10 +34,9 @@ export function initDatabase(): IKeyValueStore<TokenData> {
 
 export async function validToken(db: IKeyValueStore<TokenData>, token: string): Promise<boolean> {
 	try {
-		const tokenData = await db.get(storageKeyToken(token));
-		return tokenData ? true : false;
+		return await db.has(storageKeyToken(token));
 	} catch (error) {
-		throw new Error(`Failed to check if the item is in the DB: ${error}`);
+		throw new Error(`Failed to check if the token is in the DB: ${error}`);
 	}
 }
 
@@ -45,20 +44,10 @@ export async function createToken(
 	db: IKeyValueStore<TokenData>,
 	token: string,
 	description: string,
-	expiresAt: Date
+	ttl: number
 ): Promise<Token> {
 	if (token === '') {
 		throw new Error('Token must not be empty string');
-	}
-
-	const timestamp = timeNow();
-	if (!timeCompare(expiresAt, timestamp)) {
-		throw new Error('Expiry must be future');
-	}
-
-	const ttl = timeToSeconds(timeDelta(timestamp, expiresAt));
-	if (ttl < 60) {
-		throw new Error('TTL cannot be less than 60 seconds');
 	}
 
 	let maxTokensReached: boolean;
@@ -70,17 +59,20 @@ export async function createToken(
 			maxTokensReached = false;
 		}
 	} catch (error) {
-		throw new Error(`Failed to get keys from the DB: ${error}`);
+		throw new Error(`Failed to get tokens from the DB: ${error}`);
 	}
 	if (maxTokensReached) {
 		throw new Error('Maximum amount of active tokens has been reached');
 	}
 
 	try {
+		const createdAt = timeNow();
+		const expiresAt = timeOffset(createdAt, timeFromSecondsN(ttl));
+
 		const key = storageKeyToken(token);
 		const value: TokenData = {
 			description,
-			createdAt: timestamp,
+			createdAt,
 			expiresAt
 		};
 		await db.set(key, value, ttl);
@@ -88,7 +80,7 @@ export async function createToken(
 		return {
 			token,
 			description,
-			createdAt: timestamp,
+			createdAt,
 			expiresAt
 		};
 	} catch (error) {

@@ -43,9 +43,9 @@
 	{#if action?.credetials}
 		<Card.Root class="w-full max-w-sm">
 			<Card.Header>
-				<Card.Title>Your new Matrix credentials</Card.Title>
+				<Card.Title><b>Mister</b> - <b>M</b>atrix <b>R</b>egistration</Card.Title>
 				<Card.Description>
-					Properly save these credentials before leaving, otherwise they will be lost
+					Properly save your new credentials before leaving, otherwise they will be lost.
 				</Card.Description>
 			</Card.Header>
 			<Card.Content>
@@ -99,7 +99,7 @@
 							{/snippet}
 						</Form.Control>
 						<Form.Description>
-							Please ensure that you copy and paste the token correctly.
+							Please ensure that you have entered the token correctly.
 						</Form.Description>
 						<Form.FieldErrors />
 					</Form.Field>

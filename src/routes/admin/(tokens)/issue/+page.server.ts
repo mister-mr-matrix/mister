@@ -3,9 +3,10 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { createToken } from '$lib/server/db/token.js';
-import { convertUnitTimeToExpiryDate, generateLabelsAndValues } from '$lib/isotimer/generate.js';
 import { expiryOptions } from '$lib/server/env/expiry.js';
+import { createToken } from '$lib/server/db/token.js';
+import { convertUnitTimeToSeconds } from '$lib/time/unit.js';
+import { generateLabelsAndValues } from '$lib/time/label.js';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -36,11 +37,11 @@ export const actions: Actions = {
 			});
 		}
 
-		const expiresAt = convertUnitTimeToExpiryDate(expiresInUnit);
 		const token = crypto.randomUUID();
+		const ttl = convertUnitTimeToSeconds(expiresInUnit);
 
 		try {
-			await createToken(tokenDB, token, description, expiresAt);
+			await createToken(tokenDB, token, description, ttl);
 		} catch (error) {
 			const msg = 'Failed to issue a registration token';
 			console.error(`${msg}: ${error}`);

@@ -74,7 +74,7 @@
 						{/snippet}
 					</Form.Control>
 					<Form.Description>
-						Please ensure that you copy and paste the token correctly.
+						Please ensure that you have entered the admin token correctly.
 					</Form.Description>
 					<Form.FieldErrors />
 				</Form.Field>

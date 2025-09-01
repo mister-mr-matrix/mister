@@ -1,6 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
+import { timeFromSecondsN, timeOffset } from '$lib/time/utils';
 
 export const sessionCookieName = 'session';
 
@@ -19,13 +20,13 @@ export function setSessionTokenCookie(
 	event: RequestEvent,
 	token: string,
 	timestamp: Date,
-	inactivityTimeout: number
+	sessionTTL: number
 ): void {
 	event.cookies.set(sessionCookieName, token, {
 		httpOnly: true,
 		sameSite: 'lax',
 		path: '/',
-		expires: new Date(timestamp.getTime() + inactivityTimeout)
+		expires: timeOffset(timestamp, timeFromSecondsN(sessionTTL))
 	});
 }
 
