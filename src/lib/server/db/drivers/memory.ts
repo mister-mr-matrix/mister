@@ -1,5 +1,5 @@
 import type { IKeyValueStore } from '../interface';
-import { timeCompare, timeFromSecondsN, timeNow, timeOffset } from '$lib/server/time/utils';
+import { timeCompare, timeFromSecondsN, timeNow, timeOffset } from '$lib/time/utils';
 
 export class MemoryKVStore<V> implements IKeyValueStore<V> {
 	private store: Map<string, { value: V; createdAt: Date; expiresAt?: Date }> = new Map();

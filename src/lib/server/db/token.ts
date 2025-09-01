@@ -3,7 +3,7 @@ import type { IKeyValueStore } from './interface';
 import { initKeyValueStore } from './init';
 import type { Token, TokenData } from '$lib/types/token';
 import { z } from 'zod/v4';
-import { timeCompare, timeDelta, timeNow, timeToSeconds } from '../time/utils';
+import { timeCompare, timeDelta, timeNow, timeToSeconds } from '../../time/utils';
 
 const storageKeyTokenPrefix = 'MR_TOKEN_';
 

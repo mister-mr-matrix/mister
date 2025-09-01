@@ -2,7 +2,7 @@ import type { IKeyValueStore } from './interface';
 import { initKeyValueStore } from './init';
 import type { Session, SessionData } from '$lib/types/session';
 import { hashSessionToken } from '$lib/server/auth/session';
-import { timeCompare, timeOffset, timeToSeconds } from '../time/utils';
+import { timeCompare, timeOffset, timeToSeconds } from '../../time/utils';
 
 const storageKeySessionIdPrefix = 'MR_SESSION_';
 
