@@ -2,8 +2,8 @@ import type { PageServerLoad, Actions } from './$types.js';
 import { env } from '$env/dynamic/public';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
+import { formSchema } from './schema';
 import { validToken, removeToken } from '$lib/server/db/token.js';
 import { generateUsername } from '$lib/server/generator/username.js';
 import { generatePassphrase } from '$lib/server/generator/passphrase.js';
@@ -19,8 +19,13 @@ export const load: PageServerLoad = async ({ url }) => {
 			? await superValidate(zod4(formSchema))
 			: await superValidate({ token }, zod4(formSchema));
 
+	const generatedUsername = await generateUsername(true);
+	const generatedPassword = await generatePassphrase();
+
 	return {
-		form
+		form,
+		generatedUsername,
+		generatedPassword
 	};
 };
 

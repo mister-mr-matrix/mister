@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/private';
 import type { Credentials } from '$lib/types/credentials';
+import { availableUsername } from './available';
 
 type MatrixRegisterResponse = {
 	access_token: string;
@@ -13,6 +14,11 @@ export async function registerUser(credentials: Credentials): Promise<boolean> {
 	}
 	if (env.MR_MATRIX_REGISTRATION_TOKEN === undefined) {
 		throw new Error('MR_MATRIX_REGISTRATION_TOKEN env var not set');
+	}
+
+	const ok = await availableUsername(credentials.username);
+	if (!ok) {
+		throw new Error(`Username already taken`);
 	}
 
 	const url = `${env.MR_MATRIX_HOMESERVER_URL}/_matrix/client/v3/register`;

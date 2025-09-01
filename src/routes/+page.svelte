@@ -6,7 +6,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { Eye, EyeOff } from '@lucide/svelte';
+	import { Eye, EyeOff, Loader } from '@lucide/svelte';
 
 	import { formSchema } from './schema';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -108,7 +108,25 @@
 							<Form.Control>
 								{#snippet children({ props })}
 									<Form.Label>Username</Form.Label>
-									<Input {...props} bind:value={$formData.username} />
+									<div class="flex gap-2">
+										<Input
+											{...props}
+											bind:value={$formData.username}
+											placeholder={data.generatedUsername}
+										/>
+										<Button
+											type="button"
+											onclick={() => {
+												$formData.username = data.generatedUsername;
+											}}
+											data-sidebar="trigger"
+											variant="outline"
+											size="icon"
+										>
+											<Loader />
+											<span class="sr-only">Use the generated username</span>
+										</Button>
+									</div>
 								{/snippet}
 							</Form.Control>
 							<Form.Description>The username for your Matrix account.</Form.Description>
@@ -125,6 +143,7 @@
 											type={inputVisible ? 'text' : 'password'}
 											{...props}
 											bind:value={$formData.password}
+											placeholder={data.generatedPassword}
 										/>
 										<Button
 											type="button"
@@ -141,6 +160,18 @@
 												<EyeOff />
 											{/if}
 											<span class="sr-only">Show/Hide password</span>
+										</Button>
+										<Button
+											type="button"
+											onclick={() => {
+												$formData.password = data.generatedPassword;
+											}}
+											data-sidebar="trigger"
+											variant="outline"
+											size="icon"
+										>
+											<Loader />
+											<span class="sr-only">Use the generated password</span>
 										</Button>
 									</div>
 								{/snippet}
