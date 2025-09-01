@@ -14,6 +14,6 @@ export async function initConfig(): Promise<Config> {
 
 	return {
 		hashedAdminToken: await hashPassword(env.MR_ADMIN_TOKEN),
-		inactivityTimeout: Number.parseInt(env.MR_SESSION_INACTIVITY_TIMEOUT ?? '5') * 60 * 1000
+		inactivityTimeout: Number.parseInt(env.MR_SESSION_INACTIVITY_TIMEOUT ?? '5', 10) * 60 * 1000
 	};
 }

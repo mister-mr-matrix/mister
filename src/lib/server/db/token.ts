@@ -3,6 +3,7 @@ import type { IKeyValueStore } from './interface';
 import { initKeyValueStore } from './init';
 import type { Token, TokenData } from '$lib/types/token';
 import { z } from 'zod/v4';
+import { timeCompare, timeDelta, timeNow, timeToSeconds } from '../time/utils';
 
 const storageKeyTokenPrefix = 'MR_TOKEN_';
 
@@ -34,18 +35,7 @@ export function initDatabase(): IKeyValueStore<TokenData> {
 export async function validToken(db: IKeyValueStore<TokenData>, token: string): Promise<boolean> {
 	try {
 		const tokenData = await db.get(storageKeyToken(token));
-		if (tokenData === undefined) {
-			return false;
-		}
-
-		const timestamp = new Date(Date.now());
-		const expiresAt = new Date(tokenData.expiresAt);
-		if (timestamp.getTime() > expiresAt.getTime()) {
-			await removeToken(db, token);
-			return false;
-		}
-
-		return true;
+		return tokenData ? true : false;
 	} catch (error) {
 		throw new Error(`Failed to check if the item is in the DB: ${error}`);
 	}
@@ -61,12 +51,12 @@ export async function createToken(
 		throw new Error('Token must not be empty string');
 	}
 
-	const timestamp = new Date(Date.now());
-	if (expiresAt.getTime() <= timestamp.getTime()) {
+	const timestamp = timeNow();
+	if (!timeCompare(expiresAt, timestamp)) {
 		throw new Error('Expiry must be future');
 	}
 
-	const ttl = (expiresAt.getTime() - timestamp.getTime()) / 1000; // TTL is in seconds
+	const ttl = timeToSeconds(timeDelta(timestamp, expiresAt));
 	if (ttl < 60) {
 		throw new Error('TTL cannot be less than 60 seconds');
 	}

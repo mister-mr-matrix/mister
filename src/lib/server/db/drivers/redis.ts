@@ -41,8 +41,7 @@ export class RedisKVStore<V> implements IKeyValueStore<V> {
 	// Set a value for a key with optional TTL in seconds
 	async set(key: string, value: V, ttl?: number): Promise<void> {
 		if (ttl) {
-			// await this.redis.set(key, JSON.stringify(value), 'EX', ttl);
-			await this.redis.set(key, JSON.stringify(value));
+			await this.redis.set(key, JSON.stringify(value), 'EX', ttl);
 		} else {
 			await this.redis.set(key, JSON.stringify(value));
 		}
