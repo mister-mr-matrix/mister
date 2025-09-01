@@ -3,20 +3,19 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { expiryOptions } from '$lib/server/env/expiry.js';
 import { createToken } from '$lib/server/db/token.js';
 import { convertUnitTimeToSeconds } from '$lib/time/unit.js';
 import { generateLabelsAndValues } from '$lib/time/label.js';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals: { config } }) => {
 	return {
 		form: await superValidate(zod4(formSchema)),
-		expDateOpts: generateLabelsAndValues(expiryOptions())
+		expDateOpts: generateLabelsAndValues(config.expiryOpts)
 	};
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals: { tokenDB } }) => {
+	default: async ({ request, locals: { config, tokenDB } }) => {
 		const form = await superValidate(request, zod4(formSchema));
 		if (!form.valid) {
 			const msg = 'Invalid form';
@@ -28,7 +27,7 @@ export const actions: Actions = {
 		}
 
 		const { description, expiresInUnit } = form.data;
-		if (!expiryOptions().includes(expiresInUnit)) {
+		if (!config.expiryOpts.includes(expiresInUnit)) {
 			const msg = 'Expiration date not allowed by the server';
 			console.debug(msg);
 			return fail(400, {
