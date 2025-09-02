@@ -2,7 +2,7 @@ import type { IKeyValueStore } from './interface';
 import { initKeyValueStore } from './init';
 import type { Session, SessionData } from '$lib/types/session';
 import { hashSessionToken } from '$lib/server/auth/session';
-import { timeNow, timeToSeconds } from '$lib/time/utils';
+import { timeNow } from '$lib/time/utils';
 
 const storageKeySessionIdPrefix = 'MR_SESSION_';
 
@@ -17,7 +17,7 @@ export function initDatabase(): IKeyValueStore<SessionData> {
 export async function createSession(
 	db: IKeyValueStore<SessionData>,
 	token: string,
-	inactivityTimeout: number
+	sessionTTL: number
 ): Promise<Session> {
 	if (token === '') {
 		throw new Error('Invalid token passed (empty)');
@@ -31,14 +31,14 @@ export async function createSession(
 		const value: SessionData = {
 			timestamp
 		};
-		await db.set(key, value, timeToSeconds(inactivityTimeout));
+		await db.set(key, value, sessionTTL);
 
 		return {
 			sessionId,
 			timestamp
 		};
 	} catch (error) {
-		throw new Error(`Failed to set the new item in the DB: ${error}`);
+		throw new Error(`Failed to set the new session in the DB: ${error}`);
 	}
 }
 
@@ -61,13 +61,13 @@ export async function validateSessionToken(
 			return null;
 		}
 	} catch (error) {
-		throw new Error(`Failed to check if the item is in the DB: ${error}`);
+		throw new Error(`Failed to check if the session is in the DB: ${error}`);
 	}
 
 	try {
 		await db.set(key, value, sessionTTL);
 	} catch (error) {
-		throw new Error(`Failed to set the new timestamp for the item in the DB: ${error}`);
+		throw new Error(`Failed to set the new timestamp for the session in the DB: ${error}`);
 	}
 
 	return {
@@ -83,6 +83,6 @@ export async function invalidateSession(
 	try {
 		return await db.del(storageKeySessionId(sessionId));
 	} catch (error) {
-		throw new Error(`Failed to delete the item from the DB: ${error}`);
+		throw new Error(`Failed to delete the session from the DB: ${error}`);
 	}
 }

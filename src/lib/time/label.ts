@@ -58,9 +58,8 @@ export function generateLabelsAndValues(
 ): { label: string; value: string }[] {
 	const times = typeof input === 'string' ? input.split(',') : input;
 	return times.map((t) => {
-		const s = convertUnitTimeToSeconds(t);
 		return {
-			label: calcLabelIn(s),
+			label: calcLabelIn(convertUnitTimeToSeconds(t)),
 			value: t
 		};
 	});

@@ -84,7 +84,7 @@ export async function createToken(
 			expiresAt
 		};
 	} catch (error) {
-		throw new Error(`Failed to set the new item in the DB: ${error}`);
+		throw new Error(`Failed to set the new token in the DB: ${error}`);
 	}
 }
 
@@ -92,7 +92,7 @@ export async function removeToken(db: IKeyValueStore<TokenData>, token: string):
 	try {
 		return await db.del(storageKeyToken(token));
 	} catch (error) {
-		throw new Error(`Failed to delete the item from the DB: ${error}`);
+		throw new Error(`Failed to delete the token from the DB: ${error}`);
 	}
 }
 
@@ -106,7 +106,7 @@ export async function getAllTokens(db: IKeyValueStore<TokenData>): Promise<Token
 			expiresAt: value.expiresAt
 		}));
 	} catch (error) {
-		throw new Error(`Failed to get all entries from the DB: ${error}`);
+		throw new Error(`Failed to get all tokens from the DB: ${error}`);
 	}
 }
 
@@ -114,6 +114,6 @@ export async function removeAllTokens(db: IKeyValueStore<TokenData>): Promise<bo
 	try {
 		return await db.clear(storageKeyTokenPrefix);
 	} catch (error) {
-		throw new Error(`Failed to clear items from the DB: ${error}`);
+		throw new Error(`Failed to clear all tokens from the DB: ${error}`);
 	}
 }

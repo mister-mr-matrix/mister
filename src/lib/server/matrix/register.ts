@@ -21,7 +21,7 @@ export async function registerUser(credentials: Credentials): Promise<boolean> {
 		throw new Error(`Username already taken`);
 	}
 
-	const url = `${env.MR_MATRIX_HOMESERVER_URL}/_matrix/client/v3/register`;
+	const url = `${new URL(env.MR_MATRIX_HOMESERVER_URL).href}_matrix/client/v3/register`;
 	const body = {
 		auth: {
 			type: 'm.login.registration_token',
