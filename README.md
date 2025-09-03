@@ -1,6 +1,6 @@
 # Mister - Matrix Registration
 
-Mister is a tool designed for administrators of Matrix servers. It allows them to generate one-time tokens and links for users to register on the admin's Matrix server using the Matrix Registration API V3. The application utilizes Redis for token and session storage, but can also be configured to use an in-memory database (note that the data will not persist when the app is restarted if using the in-memory option).
+Mister is a tool designed to make registrations on your Matrix server easier to handle. It allows generating one-time tokens and links for users to register on the your Matrix server using the Matrix Registration API V3. The application utilizes Redis for token and session storage, but can also be configured to use an in-memory database (note that the data will not persist when the app is restarted if using the in-memory option). Other database options should be easy to implement so feel free to open an issue with your request.
 
 ## Features
 
@@ -11,7 +11,7 @@ Mister is a tool designed for administrators of Matrix servers. It allows them t
 
 ## Environment Variables
 
-You need to set the following environment variables for the app to work:
+Variables without default value must be set for the app to work:
 
 | Variable                        | Description                                                            | Example                            | Default Value        |
 | ------------------------------- | ---------------------------------------------------------------------- | ---------------------------------- | -------------------- |
@@ -32,21 +32,49 @@ You need to set the following environment variables for the app to work:
 | `MR_TOKEN_MAXIMUM_ACTIVE`       | Maximum number of active tokens that can be generated at once.         | `1000`                             | `1000`               |
 | `MR_TOKEN_EXPIRY_OPTIONS`       | Comma-separated list of valid token expiry options.                    | `1h,6h,12h,1d,3d,1w`               | `1h,6h,12h,1d,3d,1w` |
 
-## Redis Configuration
+## Deployment
 
-If you're using Redis for storage, make sure Redis is running and accessible via the configured host and port. The default is `localhost:6379`.
+You can use the prebuilt docker image hosted on `ghcr.io/mister-mr-matrix/mister`.
 
-To run Redis locally, you can use Docker:
+Check out the example [`docker-compose.yml`](docker-compose.yml)
+
+## Development Setup
+
+To get started with the Mister project and run a demo Matrix server (which is essentially a dummy API that answers requests used by Mister), follow the steps below:
+
+1. Run the Demo Matrix Server
+
+First, you need to run the demo Matrix server. This server is a simple implementation that will answer requests used by Mister, but is not a full Matrix server. You can run it using the following command:
 
 ```bash
-docker run --rm -p 6379:6379 docker.io/valkey/valkey:latest
+MATRIX_REGISTRATION_TOKEN="demo" go run demo/demo.go
 ```
 
-Or Podman:
+2. Set Up the Environment
+
+Before you can run Mister, you need to set up your environment variables. First, copy the example .env file with all the values required for Mister to work with the demo Matrix server:
 
 ```bash
-podman run --rm -p 6379:6379 docker.io/valkey/valkey:latest
+cp .env.example .env
 ```
+
+3. Install Dependencies
+
+Next, you need to install the project dependencies using pnpm:
+
+```bash
+pnpm i --frozen-lockfile
+```
+
+4. Start the Development Server
+
+Now you're ready to start the development server:
+
+```bash
+pnpm run dev
+```
+
+Mister will be available at `http://localhost:5173`
 
 ## License
 
