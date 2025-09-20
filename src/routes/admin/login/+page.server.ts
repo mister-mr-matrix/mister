@@ -5,7 +5,7 @@ import { formSchema } from './schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { createSession } from '$lib/server/db/session.js';
 import { setSessionTokenCookie } from '$lib/server/auth/session.js';
-import { verifyPasswordHash } from '$lib/server/auth/password.js';
+import { hashPassword, verifyPasswordHash } from '$lib/server/auth/password.js';
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -18,7 +18,7 @@ export const actions: Actions = {
 		const {
 			request,
 			locals: {
-				config: { hashedAdminToken, sessionTTL },
+				config: { adminToken, sessionTTL },
 				sessionDB
 			}
 		} = event;
@@ -34,6 +34,7 @@ export const actions: Actions = {
 		}
 
 		const { token } = form.data;
+		const hashedAdminToken = await hashPassword(adminToken);
 		const validToken = await verifyPasswordHash(hashedAdminToken, token);
 		if (!validToken) {
 			const msg = 'Invalid token';

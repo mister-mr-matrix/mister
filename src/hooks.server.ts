@@ -9,7 +9,7 @@ import {
 	sessionCookieName
 } from '$lib/server/auth/session';
 
-const cfg = await initConfig();
+const cfg = initConfig();
 const sessionDB = initSessionDB();
 const tokenDB = initTokenDB();
 

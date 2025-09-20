@@ -1,5 +1,5 @@
 export type Config = {
-	hashedAdminToken: string;
+	adminToken: string;
 	sessionTTL: number;
 	expiryOpts: string[];
 };
