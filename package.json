@@ -30,7 +30,6 @@
 		"argon2": "^0.44.0",
 		"bits-ui": "^2.9.4",
 		"clsx": "^2.1.1",
-		"eff-diceware-passphrase": "^3.0.0",
 		"eslint": "^9.34.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.11.0",
@@ -55,7 +54,7 @@
 		"zod": "4.0.10"
 	},
 	"dependencies": {
-		"argon2": "^0.44.0"
+		"eff-diceware-passphrase": "^3.0.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
