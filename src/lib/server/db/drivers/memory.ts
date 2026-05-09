@@ -53,7 +53,7 @@ export class MemoryKVStore<V> implements IKeyValueStore<V> {
 	async keys(prefix?: string): Promise<Array<string>> {
 		const keys: Array<string> = [];
 
-		for (let [key, { expiresAt }] of this.store.entries()) {
+		for (const [key, { expiresAt }] of this.store.entries()) {
 			if (prefix && !key.startsWith(prefix)) continue;
 
 			if (expiresAt && timeCompare(timeNow(), expiresAt)) {
@@ -72,7 +72,7 @@ export class MemoryKVStore<V> implements IKeyValueStore<V> {
 	async entries(prefix?: string): Promise<Array<{ key: string; value: V }>> {
 		const entries: Array<{ key: string; value: V }> = [];
 
-		for (let [key, { value, expiresAt }] of this.store.entries()) {
+		for (const [key, { value, expiresAt }] of this.store.entries()) {
 			if (prefix && !key.startsWith(prefix)) continue;
 
 			if (expiresAt && timeCompare(timeNow(), expiresAt)) {
@@ -91,7 +91,7 @@ export class MemoryKVStore<V> implements IKeyValueStore<V> {
 	async clear(prefix?: string): Promise<boolean> {
 		let result = false;
 
-		for (let key of this.store.keys()) {
+		for (const key of this.store.keys()) {
 			if (prefix && !key.startsWith(prefix)) continue;
 
 			this.store.delete(key);

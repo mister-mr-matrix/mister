@@ -18,7 +18,7 @@ export const actions: Actions = {
 		const {
 			request,
 			locals: {
-				config: { adminToken, sessionTTL },
+				config: { adminTokens, sessionTTL },
 				sessionDB
 			}
 		} = event;
@@ -33,9 +33,17 @@ export const actions: Actions = {
 			});
 		}
 
+		let validToken = false;
+
 		const { token } = form.data;
-		const hashedAdminToken = await hashPassword(adminToken);
-		const validToken = await verifyPasswordHash(hashedAdminToken, token);
+		for (const adminT of adminTokens) {
+			const hashedAdminToken = await hashPassword(adminT);
+			if (await verifyPasswordHash(hashedAdminToken, token)) {
+				validToken = true;
+				break;
+			}
+		}
+
 		if (!validToken) {
 			const msg = 'Invalid token';
 			console.error(msg);
